@@ -6,7 +6,8 @@ import Overall from "./overall";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = "https://jjxmyijqqhzyfqdtbype.supabase.co";
-const supabaseKey = process.env.SUPABASE_KEY;
+const supabaseKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpqeG15aWpxcWh6eWZxZHRieXBlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkwOTg4OTAsImV4cCI6MjA1NDY3NDg5MH0.rMt7Xk9GNsEiKYsdL3Qva5XY9XOsnKjvbehZo3WdNSg";
 createClient(supabaseUrl, supabaseKey);
 
 export default function Home() {
