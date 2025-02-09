@@ -6,7 +6,14 @@ function classNames(...classes) {
 
 type Props = {
   tabs: { name: string; current: boolean }[];
-  setTabs: Function;
+  setTabs: React.Dispatch<
+    React.SetStateAction<
+      {
+        name: string;
+        current: boolean;
+      }[]
+    >
+  >;
 };
 export default function Tabs({ tabs, setTabs }: Props) {
   return (

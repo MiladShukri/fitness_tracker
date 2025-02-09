@@ -7,7 +7,7 @@ import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = "https://jjxmyijqqhzyfqdtbype.supabase.co";
 const supabaseKey = process.env.SUPABASE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+createClient(supabaseUrl, supabaseKey);
 
 export default function Home() {
   const [tabs, setTabs] = useState([
