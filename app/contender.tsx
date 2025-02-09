@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Select from "react-select";
 
 const Contender = () => {
-  const [positiveOptions, setPositveOptions] = useState([
+  const [positiveOptions] = useState([
     { label: "Workout Completed", value: "Workout Completed - (10 points)" },
     { label: "Extra Workout", value: "Extra Workout - (5 points)" },
     {
@@ -21,7 +21,7 @@ const Contender = () => {
   ]);
 
   const [selectedPositveOption, setSelectedPositveOption] = useState(null);
-  const [negativeOptions, setNegatveOptions] = useState([
+  const [negativeOptions] = useState([
     { label: "Missed Workout", value: "Missed Workout - (-5 points)" },
     { label: "Too Much Junk Food", value: "Too Much Junk Food - (-5 points)" },
     {
