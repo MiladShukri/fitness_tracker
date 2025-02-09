@@ -1,6 +1,5 @@
 "use client";
 import Tabs from "./tabs";
-import Dropdown from "./dropdown";
 import React, { useState } from "react";
 import Contender from "./contender";
 import Overall from "./overall";
@@ -24,10 +23,10 @@ export default function Home() {
         ITD Health Challenge!
       </div>
       <Tabs tabs={tabs} setTabs={setTabs} />
-      {tabs[0].current ? <Overall props={null} /> : null}
-      {tabs[1].current ? <Contender props={null} /> : null}
-      {tabs[2].current ? <Contender props={null} /> : null}
-      {tabs[3].current ? <Contender props={null} /> : null}
+      {tabs[0].current ? <Overall /> : null}
+      {tabs[1].current ? <Contender /> : null}
+      {tabs[2].current ? <Contender /> : null}
+      {tabs[3].current ? <Contender /> : null}
     </div>
   );
 }

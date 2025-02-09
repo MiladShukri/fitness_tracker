@@ -1,9 +1,7 @@
-import Tabs from "./tabs";
-import Dropdown from "./dropdown";
 import React, { useState } from "react";
 import Select from "react-select";
 
-const Contender = ({ props }) => {
+const Contender = () => {
   const [positiveOptions, setPositveOptions] = useState([
     { label: "Workout Completed", value: "Workout Completed - (10 points)" },
     { label: "Extra Workout", value: "Extra Workout - (5 points)" },
