@@ -1,38 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import Select from "react-select";
 
-const Contender = () => {
-  const [positiveOptions] = useState([
-    { label: "Workout Completed", value: "Workout Completed - (10 points)" },
-    { label: "Extra Workout", value: "Extra Workout - (5 points)" },
-    {
-      label: "Steps Goal Met (10,000 steps)",
-      value: "Steps Goal Met (10,000 steps) - (10 points)",
-    },
-    {
-      label: "Beating a Personal Best",
-      value: "Beating a Personal Best - (15 points)",
-    },
-    { label: "Skipping Junk Food", value: "Skipping Junk Food - (5 points)" },
-    {
-      label: "Hydration Goal Met (2L Water)",
-      value: "Hydration Goal Met (2L Water) - (5 points)",
-    },
-  ]);
-
-  const [selectedPositveOption, setSelectedPositveOption] = useState(null);
-  const [negativeOptions] = useState([
-    { label: "Missed Workout", value: "Missed Workout - (-5 points)" },
-    { label: "Too Much Junk Food", value: "Too Much Junk Food - (-5 points)" },
-    {
-      label: "Skipping Hydration Goal",
-      value: "Skipping Hydration Goal - (-5 points)",
-    },
-  ]);
-
-  const [selectedNegatveOption, setSelectedNegatveOption] = useState(null);
-  console.log("selectedPositveOption", selectedPositveOption);
-  console.log("selectedNegatveOption", selectedNegatveOption);
+interface Props {
+  userDailyTotal: number;
+  selectedPositiveOption: any;
+  setSelectedPositiveOption: any;
+  positiveOptions: any;
+  selectedNegativeOption: any;
+  setSelectedNegativeOption: any;
+  negativeOptions: any;
+  handleSubmit: any;
+  currentLog: any;
+}
+const Contender = ({
+  userDailyTotal,
+  selectedPositiveOption,
+  setSelectedPositiveOption,
+  positiveOptions,
+  selectedNegativeOption,
+  setSelectedNegativeOption,
+  negativeOptions,
+  handleSubmit,
+  currentLog,
+}: Props) => {
   return (
     <div className="flex flex-col">
       <div className="flex flex-col text-6xl self-center my-16">
@@ -45,30 +35,65 @@ const Contender = () => {
         <div className="flex flex-col mx-8 p-4 rounded-xl border-4 border-green-500 w-1/3">
           <div className="mb-4">Postives</div>
           <Select
+            defaultValue={selectedPositiveOption}
             isMulti
             name="colors"
             options={positiveOptions}
             className="basic-multi-select"
             classNamePrefix="select"
-            onChange={setSelectedPositveOption}
+            onChange={setSelectedPositiveOption}
           />
         </div>
         <div className="text-6xl self-center">-</div>
         <div className="flex flex-col mx-8 p-4 rounded-xl border-4 border-red-500 w-1/3">
           <div className="mb-4">Negatives</div>
           <Select
+            defaultValue={selectedNegativeOption}
             isMulti
             name="colors"
             options={negativeOptions}
             className="basic-multi-select"
             classNamePrefix="select"
-            onChange={setSelectedNegatveOption}
+            onChange={setSelectedNegativeOption}
           />
         </div>
         <div className="text-6xl self-center">=</div>
         <div className="flex flex-col mx-8 p-4 rounded-xl border-4 border-blue-500 w-1/3">
-          <div className="mb-4">Total</div>
+          <div className="flex self-center justify-self-center mb-4 text-4xl">
+            Daily Total: {userDailyTotal}
+          </div>
         </div>
+      </div>
+      <div className="flex flex-row justify-center mx-8 p-4">
+        {JSON.stringify(currentLog?.positives) !==
+          JSON.stringify(
+            selectedPositiveOption?.length ? selectedPositiveOption : null
+          ) ||
+        JSON.stringify(currentLog?.negatives) !==
+          JSON.stringify(
+            selectedNegativeOption?.length ? selectedNegativeOption : null
+          ) ||
+        currentLog.total !== userDailyTotal ? (
+          <div className="flex self-center mr-8 text-xl text-red-500">
+            Unsaved changed please submit
+          </div>
+        ) : null}
+        <button
+          onClick={() => {
+            handleSubmit(currentLog, {
+              positives: selectedPositiveOption?.length
+                ? selectedPositiveOption
+                : null,
+              negatives: selectedNegativeOption?.length
+                ? selectedNegativeOption
+                : null,
+              total: userDailyTotal,
+            });
+          }}
+          className="w-32 py-2 self-center text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
+        >
+          Submit
+        </button>
       </div>
     </div>
   );
