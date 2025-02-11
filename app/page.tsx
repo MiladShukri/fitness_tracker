@@ -114,19 +114,18 @@ export default function Home() {
     if (loggedIn) {
       logs.forEach((element) => {
         if (element.log_date === formatDate(new Date())) {
-          if (loggedInUser === "milad" && element.id === 1) {
+          if (loggedInUser === "milad" && element.user_id === 1) {
             current = element;
             setCurrentLog(element);
-          } else if (loggedInUser === "emily" && element.id === 2) {
+          } else if (loggedInUser === "emily" && element.user_id === 2) {
             current = element;
             setCurrentLog(element);
-          } else if (loggedInUser === "leah" && element.id === 3) {
+          } else if (loggedInUser === "leah" && element.user_id === 3) {
             current = element;
             setCurrentLog(element);
           }
         }
       });
-      console.log("current", current);
       if (current) {
         setUserDailyTotal(current.total);
         if (current?.positives) {
