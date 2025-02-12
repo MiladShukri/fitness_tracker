@@ -51,7 +51,7 @@ export default function Home() {
   const [selectedNegativeOption, setSelectedNegativeOption] = useState(null);
   const [positiveOptions] = useState([
     { label: "Workout Completed", value: "Workout Completed - (10 points)" },
-    { label: "Extra Workout", value: "Extra Workout - (5 points)" },
+    { label: "Extra Workout", value: "Extra Workout - (10 points)" },
     {
       label: "Steps Goal Met (10,000 steps)",
       value: "Steps Goal Met (10,000 steps) - (10 points)",
