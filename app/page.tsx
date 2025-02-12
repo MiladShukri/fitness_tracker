@@ -5,6 +5,7 @@ import Contender from "./contender";
 import Overall from "./overall";
 import { createClient } from "@supabase/supabase-js";
 import SignIn from "./signin";
+import { ToastContainer, toast } from "react-toastify";
 
 const supabaseUrl = "https://jjxmyijqqhzyfqdtbype.supabase.co";
 const supabaseKey =
@@ -36,6 +37,11 @@ export default function Home() {
   const [currentLog, setCurrentLog] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
+  const [allUsersTotals, setAllUsersTotals] = useState([
+    { name: "Milad", total: 0 },
+    { name: "Emily", total: 0 },
+    { name: "Leah", total: 0 },
+  ]);
   const [userDailyTotal, setUserDailyTotal] = useState(0);
   const [tabs, setTabs] = useState([
     { name: "Overall", current: true },
@@ -70,12 +76,17 @@ export default function Home() {
   ]);
 
   const handleSubmit = async (currentBody, newBody) => {
-    await supabase.from("daily_logs").upsert({
+    const data = await supabase.from("daily_logs").upsert({
       ...currentBody,
       total: newBody.total,
       positives: newBody.positives,
       negatives: newBody.negatives,
     });
+    if (data.status === 200) {
+      toast.success(`Data added, Good Job ${loggedInUser}!`);
+    } else {
+      toast.error(`uh oh, Notify Milad ASAP!`);
+    }
     setCurrentLog({
       ...currentBody,
       total: newBody.total,
@@ -88,6 +99,7 @@ export default function Home() {
     const f_logs = await fetchLogs();
     setLogs(f_logs);
   };
+
   const initialFetch = async () => {
     const f_users = await fetchUsers();
     const f_logs = await fetchLogs();
@@ -111,9 +123,24 @@ export default function Home() {
   useEffect(() => {
     initialFetch();
     let current = null;
+    let miladTotal = 0;
+    let emilyTotal = 0;
+    let leahTotal = 0;
     if (loggedIn) {
       logs.forEach((element) => {
-        if (element.log_date === formatDate(new Date())) {
+        if (element.user_id === 1) {
+          miladTotal = miladTotal + element.total;
+        } else if (element.user_id === 2) {
+          emilyTotal = emilyTotal + element.total;
+        } else if (element.user_id === 3) {
+          leahTotal = leahTotal + element.total;
+        }
+        if (
+          element.log_date ===
+          (loggedInUser === "test"
+            ? formatDate(new Date("2025-02-01"))
+            : formatDate(new Date()))
+        ) {
           if (loggedInUser === "milad" && element.user_id === 1) {
             current = element;
             setCurrentLog(element);
@@ -123,9 +150,20 @@ export default function Home() {
           } else if (loggedInUser === "leah" && element.user_id === 3) {
             current = element;
             setCurrentLog(element);
+          } else if (loggedInUser === "test" && element.user_id === 4) {
+            current = element;
+            setCurrentLog(element);
           }
         }
       });
+
+      setAllUsersTotals(
+        [
+          { name: "Milad", total: miladTotal },
+          { name: "Emily", total: emilyTotal },
+          { name: "Leah", total: leahTotal },
+        ].sort((a, b) => b.total - a.total)
+      );
       if (current) {
         setUserDailyTotal(current.total);
         if (current?.positives) {
@@ -192,7 +230,9 @@ export default function Home() {
             </div>
 
             <Tabs tabs={tabs} setTabs={setTabs} />
-            {tabs[0].current ? <Overall /> : null}
+            {tabs[0].current ? (
+              <Overall allUsersTotals={allUsersTotals} />
+            ) : null}
             {tabs[1].current ? (
               <Contender
                 userDailyTotal={userDailyTotal}
@@ -214,6 +254,7 @@ export default function Home() {
             setLoggedInUser={setLoggedInUser}
           />
         )}
+        <ToastContainer />
       </>
     </div>
   );

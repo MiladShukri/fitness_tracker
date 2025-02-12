@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
 
 interface Props {
@@ -23,6 +23,29 @@ const Contender = ({
   handleSubmit,
   currentLog,
 }: Props) => {
+  const [isDisabled, setIsDisabled] = useState(true);
+
+  useEffect(() => {
+    setIsDisabled(
+      !(
+        JSON.stringify(currentLog?.positives) !==
+          JSON.stringify(
+            selectedPositiveOption?.length ? selectedPositiveOption : null
+          ) ||
+        JSON.stringify(currentLog?.negatives) !==
+          JSON.stringify(
+            selectedNegativeOption?.length ? selectedNegativeOption : null
+          ) ||
+        currentLog.total !== userDailyTotal
+      )
+    );
+  }, [
+    currentLog,
+    selectedPositiveOption,
+    selectedNegativeOption,
+    userDailyTotal,
+  ]);
+
   return (
     <div className="flex flex-col">
       <div className="flex flex-col text-6xl self-center my-16">
@@ -65,20 +88,13 @@ const Contender = ({
         </div>
       </div>
       <div className="flex flex-row justify-center mx-8 p-4">
-        {JSON.stringify(currentLog?.positives) !==
-          JSON.stringify(
-            selectedPositiveOption?.length ? selectedPositiveOption : null
-          ) ||
-        JSON.stringify(currentLog?.negatives) !==
-          JSON.stringify(
-            selectedNegativeOption?.length ? selectedNegativeOption : null
-          ) ||
-        currentLog.total !== userDailyTotal ? (
+        {isDisabled ? null : (
           <div className="flex self-center mr-8 text-xl text-red-500">
             Unsaved changed please submit
           </div>
-        ) : null}
+        )}
         <button
+          disabled={isDisabled}
           onClick={() => {
             handleSubmit(currentLog, {
               positives: selectedPositiveOption?.length
@@ -90,7 +106,11 @@ const Contender = ({
               total: userDailyTotal,
             });
           }}
-          className="w-32 py-2 self-center text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
+          className={`w-32 py-2 self-center text-white ${
+            isDisabled ? "bg-gray-600" : "bg-blue-600"
+          } rounded-md hover:${
+            isDisabled ? "bg-gray-700" : "bg-blue-700"
+          } focus:outline-none focus:ring focus:ring-blue-300`}
         >
           Submit
         </button>
