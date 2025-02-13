@@ -39,6 +39,13 @@ const fetchBonusPoints = async () => {
     .order("id", { ascending: true });
   return data;
 };
+//TODO
+// Add backdating points system
+// Points history to see where scoring is occuring
+// Timeline UX, eg when it starts/finishes/how many days left
+// Clean up code
+// Add type safety
+// Use sometime of reducer instead of so many useState hooks
 
 export default function Home() {
   const [users, setUsers] = useState(null);
