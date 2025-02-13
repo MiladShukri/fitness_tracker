@@ -3,6 +3,7 @@ import Tabs from "./tabs";
 import React, { useState, useEffect } from "react";
 import Contender from "./contender";
 import Overall from "./overall";
+import Bonus from "./bonus";
 import { createClient } from "@supabase/supabase-js";
 import SignIn from "./signin";
 import { ToastContainer, toast } from "react-toastify";
@@ -31,9 +32,20 @@ const fetchLogs = async () => {
   return data;
 };
 
+const fetchBonusPoints = async () => {
+  const { data } = await supabase
+    .from("bonus_points")
+    .select("*")
+    .order("id", { ascending: true });
+  return data;
+};
+
 export default function Home() {
   const [users, setUsers] = useState(null);
   const [logs, setLogs] = useState(null);
+  const [userOptions, setUserOptions] = useState(null);
+  const [bonusPointsOriginal, setBonusPointsOriginal] = useState(null);
+  const [bonusPoints, setBonusPoints] = useState(null);
   const [currentLog, setCurrentLog] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState(null);
@@ -46,6 +58,7 @@ export default function Home() {
   const [tabs, setTabs] = useState([
     { name: "Overall", current: true },
     { name: "My Progress", current: false },
+    { name: "Bonus Points", current: false },
   ]);
   const [selectedPositiveOption, setSelectedPositiveOption] = useState(null);
   const [selectedNegativeOption, setSelectedNegativeOption] = useState(null);
@@ -75,6 +88,77 @@ export default function Home() {
     },
   ]);
 
+  const handleSaveBonusPoints = async () => {
+    try {
+      bonusPoints.forEach(async (element) => {
+        await supabase.from("bonus_points").upsert({
+          ...element,
+        });
+      });
+    } catch {
+      toast.error(`uh oh, Notify Milad ASAP!`);
+    }
+    setBonusPointsOriginal(bonusPoints);
+    setBonusPoints(bonusPoints);
+    let miladTotal = 0;
+    let emilyTotal = 0;
+    let leahTotal = 0;
+    logs.forEach((element) => {
+      if (element.user_id === 1) {
+        miladTotal = miladTotal + element.total;
+      } else if (element.user_id === 2) {
+        emilyTotal = emilyTotal + element.total;
+      } else if (element.user_id === 3) {
+        leahTotal = leahTotal + element.total;
+      }
+    });
+    let miladBonusTotal = 0;
+    let emilyBonusTotal = 0;
+    let leahBonusTotal = 0;
+    bonusPoints.forEach((bp) => {
+      if (bp.perfect_week) {
+        bp.perfect_week.forEach((pw) => {
+          if (pw.value === 1) {
+            miladBonusTotal = miladBonusTotal + 30;
+          } else if (pw.value === 2) {
+            emilyBonusTotal = emilyBonusTotal + 30;
+          } else if (pw.value === 3) {
+            leahBonusTotal = leahBonusTotal + 30;
+          }
+        });
+      }
+      if (bp.most_steps) {
+        bp.most_steps.forEach((ms) => {
+          if (ms.value === 1) {
+            miladBonusTotal = miladBonusTotal + 25;
+          } else if (ms.value === 2) {
+            emilyBonusTotal = emilyBonusTotal + 25;
+          } else if (ms.value === 3) {
+            leahBonusTotal = leahBonusTotal + 25;
+          }
+        });
+      }
+      if (bp.longest_plank) {
+        bp.longest_plank.forEach((lp) => {
+          if (lp.value === 1) {
+            miladBonusTotal = miladBonusTotal + 20;
+          } else if (lp.value === 2) {
+            emilyBonusTotal = emilyBonusTotal + 20;
+          } else if (lp.value === 3) {
+            leahBonusTotal = leahBonusTotal + 20;
+          }
+        });
+      }
+    });
+    setAllUsersTotals(
+      [
+        { name: "Milad", total: miladTotal + miladBonusTotal },
+        { name: "Emily", total: emilyTotal + emilyBonusTotal },
+        { name: "Leah", total: leahTotal + leahBonusTotal },
+      ].sort((a, b) => b.total - a.total)
+    );
+  };
+
   const handleSubmit = async (currentBody, newBody) => {
     const data = await supabase.from("daily_logs").upsert({
       ...currentBody,
@@ -98,11 +182,81 @@ export default function Home() {
     setUserDailyTotal(newBody?.total);
     const f_logs = await fetchLogs();
     setLogs(f_logs);
+    let miladTotal = 0;
+    let emilyTotal = 0;
+    let leahTotal = 0;
+    f_logs.forEach((element) => {
+      if (element.user_id === 1) {
+        miladTotal = miladTotal + element.total;
+      } else if (element.user_id === 2) {
+        emilyTotal = emilyTotal + element.total;
+      } else if (element.user_id === 3) {
+        leahTotal = leahTotal + element.total;
+      }
+    });
+    let miladBonusTotal = 0;
+    let emilyBonusTotal = 0;
+    let leahBonusTotal = 0;
+    bonusPoints.forEach((bp) => {
+      if (bp.perfect_week) {
+        bp.perfect_week.forEach((pw) => {
+          if (pw.value === 1) {
+            miladBonusTotal = miladBonusTotal + 30;
+          } else if (pw.value === 2) {
+            emilyBonusTotal = emilyBonusTotal + 30;
+          } else if (pw.value === 3) {
+            leahBonusTotal = leahBonusTotal + 30;
+          }
+        });
+      }
+      if (bp.most_steps) {
+        bp.most_steps.forEach((ms) => {
+          if (ms.value === 1) {
+            miladBonusTotal = miladBonusTotal + 25;
+          } else if (ms.value === 2) {
+            emilyBonusTotal = emilyBonusTotal + 25;
+          } else if (ms.value === 3) {
+            leahBonusTotal = leahBonusTotal + 25;
+          }
+        });
+      }
+      if (bp.longest_plank) {
+        bp.longest_plank.forEach((lp) => {
+          if (lp.value === 1) {
+            miladBonusTotal = miladBonusTotal + 20;
+          } else if (lp.value === 2) {
+            emilyBonusTotal = emilyBonusTotal + 20;
+          } else if (lp.value === 3) {
+            leahBonusTotal = leahBonusTotal + 20;
+          }
+        });
+      }
+    });
+    setAllUsersTotals(
+      [
+        { name: "Milad", total: miladTotal + miladBonusTotal },
+        { name: "Emily", total: emilyTotal + emilyBonusTotal },
+        { name: "Leah", total: leahTotal + leahBonusTotal },
+      ].sort((a, b) => b.total - a.total)
+    );
   };
 
   const initialFetch = async () => {
     const f_users = await fetchUsers();
     const f_logs = await fetchLogs();
+    const f_bonusPoints = await fetchBonusPoints();
+    setBonusPointsOriginal(f_bonusPoints);
+    setBonusPoints(f_bonusPoints);
+    const options = [];
+    f_users.forEach((user) => {
+      if (user.id !== 4) {
+        options.push({
+          value: user.id,
+          label: user.name,
+        });
+      }
+    });
+    setUserOptions(options);
     setUsers(f_users);
     setLogs(f_logs);
   };
@@ -156,12 +310,49 @@ export default function Home() {
           }
         }
       });
-
+      let miladBonusTotal = 0;
+      let emilyBonusTotal = 0;
+      let leahBonusTotal = 0;
+      bonusPoints.forEach((bp) => {
+        if (bp.perfect_week) {
+          bp.perfect_week.forEach((pw) => {
+            if (pw.value === 1) {
+              miladBonusTotal = miladBonusTotal + 30;
+            } else if (pw.value === 2) {
+              emilyBonusTotal = emilyBonusTotal + 30;
+            } else if (pw.value === 3) {
+              leahBonusTotal = leahBonusTotal + 30;
+            }
+          });
+        }
+        if (bp.most_steps) {
+          bp.most_steps.forEach((ms) => {
+            if (ms.value === 1) {
+              miladBonusTotal = miladBonusTotal + 25;
+            } else if (ms.value === 2) {
+              emilyBonusTotal = emilyBonusTotal + 25;
+            } else if (ms.value === 3) {
+              leahBonusTotal = leahBonusTotal + 25;
+            }
+          });
+        }
+        if (bp.longest_plank) {
+          bp.longest_plank.forEach((lp) => {
+            if (lp.value === 1) {
+              miladBonusTotal = miladBonusTotal + 20;
+            } else if (lp.value === 2) {
+              emilyBonusTotal = emilyBonusTotal + 20;
+            } else if (lp.value === 3) {
+              leahBonusTotal = leahBonusTotal + 20;
+            }
+          });
+        }
+      });
       setAllUsersTotals(
         [
-          { name: "Milad", total: miladTotal },
-          { name: "Emily", total: emilyTotal },
-          { name: "Leah", total: leahTotal },
+          { name: "Milad", total: miladTotal + miladBonusTotal },
+          { name: "Emily", total: emilyTotal + emilyBonusTotal },
+          { name: "Leah", total: leahTotal + leahBonusTotal },
         ].sort((a, b) => b.total - a.total)
       );
       if (current) {
@@ -244,6 +435,15 @@ export default function Home() {
                 negativeOptions={negativeOptions}
                 handleSubmit={handleSubmit}
                 currentLog={currentLog}
+              />
+            ) : null}
+            {tabs[2].current ? (
+              <Bonus
+                setBonusPoints={setBonusPoints}
+                bonusPoints={bonusPoints}
+                bonusPointsOriginal={bonusPointsOriginal}
+                userOptions={userOptions}
+                handleSaveBonusPoints={handleSaveBonusPoints}
               />
             ) : null}
           </div>

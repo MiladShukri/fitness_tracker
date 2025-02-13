@@ -47,16 +47,18 @@ const Contender = ({
   ]);
 
   return (
-    <div className="flex flex-col">
-      <div className="flex flex-col text-6xl self-center my-16">
-        <div className="self-center">
+    <div className="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
+      <div className="flex flex-col text-4xl self-center my-8">
+        <div className="self-center text-gray-700">
           {new Date().toLocaleDateString("en-GB")}
         </div>
-        <div className="self-center">What did you do today?</div>
+        <div className="self-center text-gray-800 font-semibold">
+          What did you do today?
+        </div>
       </div>
-      <div className="flex w-full h-1/3">
-        <div className="flex flex-col mx-8 p-4 rounded-xl border-4 border-green-500 w-1/3">
-          <div className="mb-4">Postives</div>
+      <div className="flex w-full h-1/3 justify-center">
+        <div className="flex flex-col mx-4 p-4 rounded-xl border-4 border-green-500 w-1/4 shadow-lg">
+          <div className="mb-2 text-lg font-semibold">Positives</div>
           <Select
             defaultValue={selectedPositiveOption}
             isMulti
@@ -67,9 +69,9 @@ const Contender = ({
             onChange={setSelectedPositiveOption}
           />
         </div>
-        <div className="text-6xl self-center">-</div>
-        <div className="flex flex-col mx-8 p-4 rounded-xl border-4 border-red-500 w-1/3">
-          <div className="mb-4">Negatives</div>
+        <div className="flex items-center justify-center text-6xl mx-4">-</div>
+        <div className="flex flex-col mx-4 p-4 rounded-xl border-4 border-red-500 w-1/4 shadow-lg">
+          <div className="mb-2 text-lg font-semibold">Negatives</div>
           <Select
             defaultValue={selectedNegativeOption}
             isMulti
@@ -80,9 +82,9 @@ const Contender = ({
             onChange={setSelectedNegativeOption}
           />
         </div>
-        <div className="text-6xl self-center">=</div>
-        <div className="flex flex-col mx-8 p-4 rounded-xl border-4 border-blue-500 w-1/3">
-          <div className="flex self-center justify-self-center mb-4 text-4xl">
+        <div className="flex items-center justify-center text-6xl mx-4">=</div>
+        <div className="flex flex-col mx-4 p-4 rounded-xl border-4 border-blue-500 w-1/4 shadow-lg">
+          <div className="flex self-center justify-self-center mb-2 text-2xl font-semibold">
             Daily Total: {userDailyTotal}
           </div>
         </div>
@@ -90,7 +92,7 @@ const Contender = ({
       <div className="flex flex-row justify-center mx-8 p-4">
         {isDisabled ? null : (
           <div className="flex self-center mr-8 text-xl text-red-500">
-            Unsaved changed please submit
+            Unsaved changes, please submit
           </div>
         )}
         <button
@@ -110,7 +112,7 @@ const Contender = ({
             isDisabled ? "bg-gray-600" : "bg-blue-600"
           } rounded-md hover:${
             isDisabled ? "bg-gray-700" : "bg-blue-700"
-          } focus:outline-none focus:ring focus:ring-blue-300`}
+          } focus:outline-none focus:ring focus:ring-blue-300 transition duration-200`}
         >
           Submit
         </button>
