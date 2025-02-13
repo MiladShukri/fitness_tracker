@@ -39,6 +39,77 @@ const fetchBonusPoints = async () => {
     .order("id", { ascending: true });
   return data;
 };
+
+const userTotalUpdate = (logs, bonusPoints, setAllUsersTotals) => {
+  let miladTotal = 0;
+  let emilyTotal = 0;
+  let leahTotal = 0;
+  let zeeshanTotal = 0;
+  logs.forEach((element) => {
+    if (element.user_id === 1) {
+      miladTotal = miladTotal + element.total;
+    } else if (element.user_id === 2) {
+      emilyTotal = emilyTotal + element.total;
+    } else if (element.user_id === 3) {
+      leahTotal = leahTotal + element.total;
+    } else if (element.user_id === 5) {
+      zeeshanTotal = zeeshanTotal + element.total;
+    }
+  });
+  let miladBonusTotal = 0;
+  let emilyBonusTotal = 0;
+  let leahBonusTotal = 0;
+  let zeeshanBonusTotal = 0;
+  bonusPoints.forEach((bp) => {
+    if (bp.perfect_week) {
+      bp.perfect_week.forEach((pw) => {
+        if (pw.value === 1) {
+          miladBonusTotal = miladBonusTotal + 30;
+        } else if (pw.value === 2) {
+          emilyBonusTotal = emilyBonusTotal + 30;
+        } else if (pw.value === 3) {
+          leahBonusTotal = leahBonusTotal + 30;
+        } else if (pw.value === 5) {
+          zeeshanBonusTotal = zeeshanBonusTotal + 30;
+        }
+      });
+    }
+    if (bp.most_steps) {
+      bp.most_steps.forEach((ms) => {
+        if (ms.value === 1) {
+          miladBonusTotal = miladBonusTotal + 25;
+        } else if (ms.value === 2) {
+          emilyBonusTotal = emilyBonusTotal + 25;
+        } else if (ms.value === 3) {
+          leahBonusTotal = leahBonusTotal + 25;
+        } else if (ms.value === 5) {
+          zeeshanBonusTotal = zeeshanBonusTotal + 30;
+        }
+      });
+    }
+    if (bp.longest_plank) {
+      bp.longest_plank.forEach((lp) => {
+        if (lp.value === 1) {
+          miladBonusTotal = miladBonusTotal + 20;
+        } else if (lp.value === 2) {
+          emilyBonusTotal = emilyBonusTotal + 20;
+        } else if (lp.value === 3) {
+          leahBonusTotal = leahBonusTotal + 20;
+        } else if (lp.value === 5) {
+          zeeshanBonusTotal = zeeshanBonusTotal + 30;
+        }
+      });
+    }
+  });
+  setAllUsersTotals(
+    [
+      { name: "Milad", total: miladTotal + miladBonusTotal },
+      { name: "Emily", total: emilyTotal + emilyBonusTotal },
+      { name: "Leah", total: leahTotal + leahBonusTotal },
+      { name: "Zeeshan", total: zeeshanTotal + zeeshanBonusTotal },
+    ].sort((a, b) => b.total - a.total)
+  );
+};
 //TODO
 // Add backdating points system
 // Points history to see where scoring is occuring
@@ -60,6 +131,7 @@ export default function Home() {
     { name: "Milad", total: 0 },
     { name: "Emily", total: 0 },
     { name: "Leah", total: 0 },
+    { name: "Zeeshan", total: 0 },
   ]);
   const [userDailyTotal, setUserDailyTotal] = useState(0);
   const [tabs, setTabs] = useState([
@@ -107,63 +179,7 @@ export default function Home() {
     }
     setBonusPointsOriginal(bonusPoints);
     setBonusPoints(bonusPoints);
-    let miladTotal = 0;
-    let emilyTotal = 0;
-    let leahTotal = 0;
-    logs.forEach((element) => {
-      if (element.user_id === 1) {
-        miladTotal = miladTotal + element.total;
-      } else if (element.user_id === 2) {
-        emilyTotal = emilyTotal + element.total;
-      } else if (element.user_id === 3) {
-        leahTotal = leahTotal + element.total;
-      }
-    });
-    let miladBonusTotal = 0;
-    let emilyBonusTotal = 0;
-    let leahBonusTotal = 0;
-    bonusPoints.forEach((bp) => {
-      if (bp.perfect_week) {
-        bp.perfect_week.forEach((pw) => {
-          if (pw.value === 1) {
-            miladBonusTotal = miladBonusTotal + 30;
-          } else if (pw.value === 2) {
-            emilyBonusTotal = emilyBonusTotal + 30;
-          } else if (pw.value === 3) {
-            leahBonusTotal = leahBonusTotal + 30;
-          }
-        });
-      }
-      if (bp.most_steps) {
-        bp.most_steps.forEach((ms) => {
-          if (ms.value === 1) {
-            miladBonusTotal = miladBonusTotal + 25;
-          } else if (ms.value === 2) {
-            emilyBonusTotal = emilyBonusTotal + 25;
-          } else if (ms.value === 3) {
-            leahBonusTotal = leahBonusTotal + 25;
-          }
-        });
-      }
-      if (bp.longest_plank) {
-        bp.longest_plank.forEach((lp) => {
-          if (lp.value === 1) {
-            miladBonusTotal = miladBonusTotal + 20;
-          } else if (lp.value === 2) {
-            emilyBonusTotal = emilyBonusTotal + 20;
-          } else if (lp.value === 3) {
-            leahBonusTotal = leahBonusTotal + 20;
-          }
-        });
-      }
-    });
-    setAllUsersTotals(
-      [
-        { name: "Milad", total: miladTotal + miladBonusTotal },
-        { name: "Emily", total: emilyTotal + emilyBonusTotal },
-        { name: "Leah", total: leahTotal + leahBonusTotal },
-      ].sort((a, b) => b.total - a.total)
-    );
+    userTotalUpdate(logs, bonusPoints, setAllUsersTotals);
   };
 
   const handleSubmit = async (currentBody, newBody) => {
@@ -189,63 +205,7 @@ export default function Home() {
     setUserDailyTotal(newBody?.total);
     const f_logs = await fetchLogs();
     setLogs(f_logs);
-    let miladTotal = 0;
-    let emilyTotal = 0;
-    let leahTotal = 0;
-    f_logs.forEach((element) => {
-      if (element.user_id === 1) {
-        miladTotal = miladTotal + element.total;
-      } else if (element.user_id === 2) {
-        emilyTotal = emilyTotal + element.total;
-      } else if (element.user_id === 3) {
-        leahTotal = leahTotal + element.total;
-      }
-    });
-    let miladBonusTotal = 0;
-    let emilyBonusTotal = 0;
-    let leahBonusTotal = 0;
-    bonusPoints.forEach((bp) => {
-      if (bp.perfect_week) {
-        bp.perfect_week.forEach((pw) => {
-          if (pw.value === 1) {
-            miladBonusTotal = miladBonusTotal + 30;
-          } else if (pw.value === 2) {
-            emilyBonusTotal = emilyBonusTotal + 30;
-          } else if (pw.value === 3) {
-            leahBonusTotal = leahBonusTotal + 30;
-          }
-        });
-      }
-      if (bp.most_steps) {
-        bp.most_steps.forEach((ms) => {
-          if (ms.value === 1) {
-            miladBonusTotal = miladBonusTotal + 25;
-          } else if (ms.value === 2) {
-            emilyBonusTotal = emilyBonusTotal + 25;
-          } else if (ms.value === 3) {
-            leahBonusTotal = leahBonusTotal + 25;
-          }
-        });
-      }
-      if (bp.longest_plank) {
-        bp.longest_plank.forEach((lp) => {
-          if (lp.value === 1) {
-            miladBonusTotal = miladBonusTotal + 20;
-          } else if (lp.value === 2) {
-            emilyBonusTotal = emilyBonusTotal + 20;
-          } else if (lp.value === 3) {
-            leahBonusTotal = leahBonusTotal + 20;
-          }
-        });
-      }
-    });
-    setAllUsersTotals(
-      [
-        { name: "Milad", total: miladTotal + miladBonusTotal },
-        { name: "Emily", total: emilyTotal + emilyBonusTotal },
-        { name: "Leah", total: leahTotal + leahBonusTotal },
-      ].sort((a, b) => b.total - a.total)
-    );
+    userTotalUpdate(f_logs, bonusPoints, setAllUsersTotals);
   };
 
   const initialFetch = async () => {
@@ -278,24 +238,15 @@ export default function Home() {
     setTabs([
       { name: "Overall", current: true },
       { name: "My Progress", current: false },
+      { name: "Bonus Points", current: false },
     ]);
   };
 
   useEffect(() => {
     initialFetch();
     let current = null;
-    let miladTotal = 0;
-    let emilyTotal = 0;
-    let leahTotal = 0;
     if (loggedIn) {
       logs.forEach((element) => {
-        if (element.user_id === 1) {
-          miladTotal = miladTotal + element.total;
-        } else if (element.user_id === 2) {
-          emilyTotal = emilyTotal + element.total;
-        } else if (element.user_id === 3) {
-          leahTotal = leahTotal + element.total;
-        }
         if (
           element.log_date ===
           (loggedInUser === "test"
@@ -314,54 +265,14 @@ export default function Home() {
           } else if (loggedInUser === "test" && element.user_id === 4) {
             current = element;
             setCurrentLog(element);
+          } else if (loggedInUser === "zeeshan" && element.user_id === 5) {
+            current = element;
+            setCurrentLog(element);
           }
         }
       });
-      let miladBonusTotal = 0;
-      let emilyBonusTotal = 0;
-      let leahBonusTotal = 0;
-      bonusPoints.forEach((bp) => {
-        if (bp.perfect_week) {
-          bp.perfect_week.forEach((pw) => {
-            if (pw.value === 1) {
-              miladBonusTotal = miladBonusTotal + 30;
-            } else if (pw.value === 2) {
-              emilyBonusTotal = emilyBonusTotal + 30;
-            } else if (pw.value === 3) {
-              leahBonusTotal = leahBonusTotal + 30;
-            }
-          });
-        }
-        if (bp.most_steps) {
-          bp.most_steps.forEach((ms) => {
-            if (ms.value === 1) {
-              miladBonusTotal = miladBonusTotal + 25;
-            } else if (ms.value === 2) {
-              emilyBonusTotal = emilyBonusTotal + 25;
-            } else if (ms.value === 3) {
-              leahBonusTotal = leahBonusTotal + 25;
-            }
-          });
-        }
-        if (bp.longest_plank) {
-          bp.longest_plank.forEach((lp) => {
-            if (lp.value === 1) {
-              miladBonusTotal = miladBonusTotal + 20;
-            } else if (lp.value === 2) {
-              emilyBonusTotal = emilyBonusTotal + 20;
-            } else if (lp.value === 3) {
-              leahBonusTotal = leahBonusTotal + 20;
-            }
-          });
-        }
-      });
-      setAllUsersTotals(
-        [
-          { name: "Milad", total: miladTotal + miladBonusTotal },
-          { name: "Emily", total: emilyTotal + emilyBonusTotal },
-          { name: "Leah", total: leahTotal + leahBonusTotal },
-        ].sort((a, b) => b.total - a.total)
-      );
+
+      userTotalUpdate(logs, bonusPoints, setAllUsersTotals);
       if (current) {
         setUserDailyTotal(current.total);
         if (current?.positives) {
