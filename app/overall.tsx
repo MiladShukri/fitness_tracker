@@ -68,6 +68,13 @@ const Overall = ({ allUsersTotals }: Props) => {
                 ? "rd"
                 : "th"}{" "}
               Place: <strong>{user.name}</strong>
+              {user.rank === 1
+                ? "🥇"
+                : user.rank === 2
+                ? "🥈"
+                : user.rank === 3
+                ? "🥉"
+                : "🤡"}
             </p>
           ))}
         </div>

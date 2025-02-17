@@ -7,6 +7,18 @@ import Bonus from "./bonus";
 import { createClient } from "@supabase/supabase-js";
 import SignIn from "./signin";
 import { ToastContainer, toast } from "react-toastify";
+import okHandSign from "./images/ok-hand-sign.png";
+
+const ImageComponent = () => {
+  return (
+    <img
+      //@ts-ignore
+      src={require("./images/ok-hand-sign.png")}
+      // alt="Hand sign"
+      className="w-screen h-screen object-cover"
+    />
+  );
+};
 
 const supabaseUrl = "https://jjxmyijqqhzyfqdtbype.supabase.co";
 const supabaseKey =
@@ -150,6 +162,7 @@ export default function Home() {
     { name: "Overall", current: true },
     { name: "My Progress", current: false },
     { name: "Bonus Points", current: false },
+    { name: "Bonus Challenges", current: false },
   ]);
   const [selectedPositiveOption, setSelectedPositiveOption] = useState(null);
   const [selectedNegativeOption, setSelectedNegativeOption] = useState(null);
@@ -251,6 +264,7 @@ export default function Home() {
       { name: "Overall", current: true },
       { name: "My Progress", current: false },
       { name: "Bonus Points", current: false },
+      { name: "Bonus Challenges", current: false },
     ]);
   };
 
@@ -389,6 +403,11 @@ export default function Home() {
                 userOptions={userOptions}
                 handleSaveBonusPoints={handleSaveBonusPoints}
               />
+            ) : null}
+            {tabs[3].current ? (
+              <div className="w-full h-full" style={{ fontSize: 800 }}>
+                👌🤣
+              </div>
             ) : null}
           </div>
         ) : (
