@@ -74,6 +74,8 @@ const Overall = ({ allUsersTotals }: Props) => {
                 ? "🥈"
                 : user.rank === 3
                 ? "🥉"
+                : user.rank === 4
+                ? "💩"
                 : "🤡"}
             </p>
           ))}
