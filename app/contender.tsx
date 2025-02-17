@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface Props {
   userDailyTotal: number;
@@ -11,7 +13,10 @@ interface Props {
   negativeOptions: any;
   handleSubmit: any;
   currentLog: any;
+  selectedDate: any;
+  handleDateChange: any;
 }
+
 const Contender = ({
   userDailyTotal,
   selectedPositiveOption,
@@ -22,6 +27,8 @@ const Contender = ({
   negativeOptions,
   handleSubmit,
   currentLog,
+  selectedDate,
+  handleDateChange,
 }: Props) => {
   const [isDisabled, setIsDisabled] = useState(true);
 
@@ -44,42 +51,54 @@ const Contender = ({
     selectedPositiveOption,
     selectedNegativeOption,
     userDailyTotal,
+    selectedDate,
   ]);
 
   return (
     <div className="flex flex-col items-center bg-gray-50 p-6 rounded-lg shadow-md">
       <div className="flex flex-col text-4xl self-center my-8">
         <div className="self-center text-gray-700">
-          {new Date().toLocaleDateString("en-GB")}
+          <DatePicker
+            selected={selectedDate}
+            onChange={handleDateChange}
+            dateFormat="dd/MM/yyyy"
+            className="border rounded-md p-2 mb-4"
+            minDate={new Date("2025-02-10")} //challenge start date
+            maxDate={new Date("2025-03-10")} //challenge start date
+          />
         </div>
         <div className="self-center text-gray-800 font-semibold">
-          What did you do today?
+          Update your progress!!
         </div>
       </div>
       <div className="flex w-full h-1/3 justify-center">
         <div className="flex flex-col mx-4 p-4 rounded-xl border-4 border-green-500 w-1/4 shadow-lg">
           <div className="mb-2 text-lg font-semibold">Positives</div>
           <Select
-            defaultValue={selectedPositiveOption}
+            value={selectedPositiveOption}
             isMulti
-            name="colors"
+            name="positives"
             options={positiveOptions}
             className="basic-multi-select"
             classNamePrefix="select"
-            onChange={setSelectedPositiveOption}
+            onChange={(options) => {
+              setSelectedPositiveOption([...options]);
+            }}
           />
         </div>
         <div className="flex items-center justify-center text-6xl mx-4">-</div>
         <div className="flex flex-col mx-4 p-4 rounded-xl border-4 border-red-500 w-1/4 shadow-lg">
           <div className="mb-2 text-lg font-semibold">Negatives</div>
           <Select
-            defaultValue={selectedNegativeOption}
+            value={selectedNegativeOption}
             isMulti
-            name="colors"
+            name="negatives"
             options={negativeOptions}
             className="basic-multi-select"
             classNamePrefix="select"
-            onChange={setSelectedNegativeOption}
+            onChange={(options) => {
+              setSelectedNegativeOption([...options]);
+            }}
           />
         </div>
         <div className="flex items-center justify-center text-6xl mx-4">=</div>

@@ -111,7 +111,6 @@ const userTotalUpdate = (logs, bonusPoints, setAllUsersTotals) => {
   );
 };
 //TODO
-// Add backdating points system
 // Points history to see where scoring is occuring
 // Timeline UX, eg when it starts/finishes/how many days left
 // Clean up code
@@ -119,6 +118,7 @@ const userTotalUpdate = (logs, bonusPoints, setAllUsersTotals) => {
 // Use sometime of reducer instead of so many useState hooks
 
 export default function Home() {
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [users, setUsers] = useState(null);
   const [logs, setLogs] = useState(null);
   const [userOptions, setUserOptions] = useState(null);
@@ -242,7 +242,7 @@ export default function Home() {
     ]);
   };
 
-  useEffect(() => {
+  const load = (date) => {
     initialFetch();
     let current = null;
     if (loggedIn) {
@@ -251,7 +251,7 @@ export default function Home() {
           element.log_date ===
           (loggedInUser === "test"
             ? formatDate(new Date("2025-02-01"))
-            : formatDate(new Date()))
+            : formatDate(date))
         ) {
           if (loggedInUser === "milad" && element.user_id === 1) {
             current = element;
@@ -275,14 +275,23 @@ export default function Home() {
       userTotalUpdate(logs, bonusPoints, setAllUsersTotals);
       if (current) {
         setUserDailyTotal(current.total);
-        if (current?.positives) {
-          setSelectedPositiveOption(current?.positives);
-        }
-        if (current?.negatives) {
-          setSelectedNegativeOption(current?.negatives);
-        }
+        setSelectedPositiveOption(
+          current?.positives ? current?.positives : null
+        );
+        setSelectedNegativeOption(
+          current?.negatives ? current?.negatives : null
+        );
       }
     }
+  };
+
+  const handleDateChange = (date: Date) => {
+    setSelectedDate(date);
+    load(date);
+  };
+
+  useEffect(() => {
+    load(selectedDate);
   }, [loggedIn]);
 
   useEffect(() => {
@@ -353,6 +362,8 @@ export default function Home() {
                 negativeOptions={negativeOptions}
                 handleSubmit={handleSubmit}
                 currentLog={currentLog}
+                selectedDate={selectedDate}
+                handleDateChange={handleDateChange}
               />
             ) : null}
             {tabs[2].current ? (

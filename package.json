@@ -12,10 +12,12 @@
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "@supabase/supabase-js": "^2.48.1",
+    "date-fns": "^4.1.0",
     "heroicons": "^2.2.0",
     "lodash": "^4.17.21",
     "next": "15.1.6",
     "react": "^19.0.0",
+    "react-datepicker": "^8.0.0",
     "react-dom": "^19.0.0",
     "react-select": "^5.10.0",
     "react-toastify": "^11.0.3"
