@@ -45,6 +45,7 @@ const userTotalUpdate = (logs, bonusPoints, setAllUsersTotals) => {
   let emilyTotal = 0;
   let leahTotal = 0;
   let zeeshanTotal = 0;
+  let kainaatTotal = 0;
   logs.forEach((element) => {
     if (element.user_id === 1) {
       miladTotal = miladTotal + element.total;
@@ -54,12 +55,15 @@ const userTotalUpdate = (logs, bonusPoints, setAllUsersTotals) => {
       leahTotal = leahTotal + element.total;
     } else if (element.user_id === 5) {
       zeeshanTotal = zeeshanTotal + element.total;
+    } else if (element.user_id === 6) {
+      kainaatTotal = kainaatTotal + element.total;
     }
   });
   let miladBonusTotal = 0;
   let emilyBonusTotal = 0;
   let leahBonusTotal = 0;
   let zeeshanBonusTotal = 0;
+  let kainaatBonusTotal = 0;
   bonusPoints.forEach((bp) => {
     if (bp.perfect_week) {
       bp.perfect_week.forEach((pw) => {
@@ -71,6 +75,8 @@ const userTotalUpdate = (logs, bonusPoints, setAllUsersTotals) => {
           leahBonusTotal = leahBonusTotal + 30;
         } else if (pw.value === 5) {
           zeeshanBonusTotal = zeeshanBonusTotal + 30;
+        } else if (pw.value === 6) {
+          kainaatBonusTotal = kainaatBonusTotal + 30;
         }
       });
     }
@@ -84,6 +90,8 @@ const userTotalUpdate = (logs, bonusPoints, setAllUsersTotals) => {
           leahBonusTotal = leahBonusTotal + 25;
         } else if (ms.value === 5) {
           zeeshanBonusTotal = zeeshanBonusTotal + 30;
+        } else if (ms.value === 6) {
+          kainaatBonusTotal = kainaatBonusTotal + 30;
         }
       });
     }
@@ -97,6 +105,8 @@ const userTotalUpdate = (logs, bonusPoints, setAllUsersTotals) => {
           leahBonusTotal = leahBonusTotal + 20;
         } else if (lp.value === 5) {
           zeeshanBonusTotal = zeeshanBonusTotal + 30;
+        } else if (lp.value === 6) {
+          kainaatBonusTotal = kainaatBonusTotal + 30;
         }
       });
     }
@@ -107,6 +117,7 @@ const userTotalUpdate = (logs, bonusPoints, setAllUsersTotals) => {
       { name: "Emily", total: emilyTotal + emilyBonusTotal },
       { name: "Leah", total: leahTotal + leahBonusTotal },
       { name: "Zeeshan", total: zeeshanTotal + zeeshanBonusTotal },
+      { name: "Kainaat", total: kainaatTotal + kainaatBonusTotal },
     ].sort((a, b) => b.total - a.total)
   );
 };
@@ -132,6 +143,7 @@ export default function Home() {
     { name: "Emily", total: 0 },
     { name: "Leah", total: 0 },
     { name: "Zeeshan", total: 0 },
+    { name: "Kainaat", total: 0 },
   ]);
   const [userDailyTotal, setUserDailyTotal] = useState(0);
   const [tabs, setTabs] = useState([
@@ -266,6 +278,9 @@ export default function Home() {
             current = element;
             setCurrentLog(element);
           } else if (loggedInUser === "zeeshan" && element.user_id === 5) {
+            current = element;
+            setCurrentLog(element);
+          } else if (loggedInUser === "kainaat" && element.user_id === 6) {
             current = element;
             setCurrentLog(element);
           }
